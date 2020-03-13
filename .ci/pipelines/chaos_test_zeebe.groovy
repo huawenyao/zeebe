@@ -29,7 +29,7 @@ pipeline {
                 }
                 dir('zeebe') {
                     git url: 'git@github.com:zeebe-io/zeebe',
-                            branch: "develop",
+                            branch: "zell-chaos",
                             credentialsId: 'camunda-jenkins-github-ssh',
                             poll: false
                 }
@@ -57,6 +57,7 @@ pipeline {
                           sh "make clean zeebe worker"
                         }
                     }
+
                 }
             }
         }
@@ -68,6 +69,7 @@ pipeline {
                         script {
                             findFiles(glob: '**/*.json').each {
                                 sh 'PATH="$PATH:$(pwd)/scripts/" chaos run ' + it
+
                             }
                         }
                     }
@@ -79,6 +81,7 @@ pipeline {
     post {
         always {
             container('python') {
+
                 sh "zeebe/benchmark/setup/deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
             }
         }
@@ -90,6 +93,7 @@ pipeline {
 }
 
 void buildNotification(String buildStatus, String to) {
+
     buildStatus = buildStatus ?: 'SUCCESS'
 
     String subject = "[${buildStatus}] - ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}"
@@ -101,6 +105,7 @@ void buildNotification(String buildStatus, String to) {
 static String pythonAgent() {
     def nodePool = 'slaves'
     def project = 'zeebe'
+
     """
 metadata:
   labels:

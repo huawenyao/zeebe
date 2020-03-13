@@ -2,7 +2,7 @@
 
 set -ex
 
-apk --no-cache add bash make curl
+apk --no-cache add bash make curl openssl
 
 pip install chaostoolkit
 chaos --version
