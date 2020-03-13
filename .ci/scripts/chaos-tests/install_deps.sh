@@ -11,3 +11,10 @@ kubectl_version=$(curl -s https://storage.googleapis.com/kubernetes-release/rele
 curl -LO https://storage.googleapis.com/kubernetes-release/release/${kubectl_version}/bin/linux/amd64/kubectl
 install kubectl /usr/local/bin/
 kubectl version --client
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+curl -LO https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens
+install kubens /usr/local/bin/

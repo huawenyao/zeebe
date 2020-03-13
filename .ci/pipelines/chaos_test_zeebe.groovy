@@ -21,8 +21,8 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                dir('zeebe-benchmark') {
-                    git url: 'git@github.com:zeebe-io/zeebe-benchmark',
+                dir('zeebe-chaos') {
+                    git url: 'git@github.com:zeebe-io/zeebe-chaos',
                             branch: "master",
                             credentialsId: 'camunda-jenkins-github-ssh',
                             poll: false
@@ -50,12 +50,12 @@ pipeline {
                     // copy dummy kubeconfig so we can change default namespace later, without the config
                     // file `kubectl` cannot change the context since it's not defined
                     sh 'mkdir -p ~/.kube && cp zeebe/.ci/scripts/chaos-tests/kubeconfig ~/.kube/config'
-                    sh "cp -a zeebe-benchmark/k8s/. zeebe/.ci/scripts/chaos-tests/kustomize/"
 
-                    dir('zeebe/.ci/scripts/chaos-tests/') {
-                        sh "./setup.sh --action=create --namespace=${CHAOS_TEST_NAMESPACE}"
-                        sh "kubectl config set-context --current --namespace=${CHAOS_TEST_NAMESPACE}"
-                        sh 'kubectl apply --kustomize kustomize'
+                    dir('zeebe/benchmarks/setup') {
+                        sh "./newBenchmark ${CHAOS_TEST_NAMESPACE}"
+                        dir('zeebe/benchmark/setup/${CHAOS_TEST_NAMESPACE}') {
+                          sh "make clean zeebe worker"
+                        }
                     }
                 }
             }
@@ -64,7 +64,7 @@ pipeline {
         stage('Run chaos tests') {
             steps {
                 container('python') {
-                    dir('zeebe-benchmark/chaos') {
+                    dir('zeebe-chaos/chaos-experiments/kubernetes') {
                         script {
                             findFiles(glob: '**/*.json').each {
                                 sh 'PATH="$PATH:$(pwd)/scripts/" chaos run ' + it
@@ -79,7 +79,7 @@ pipeline {
     post {
         always {
             container('python') {
-                sh "zeebe/.ci/scripts/chaos-tests/setup.sh --action=delete --namespace=${CHAOS_TEST_NAMESPACE}"
+                sh "zeebe/benchmark/setup/deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
             }
         }
 
