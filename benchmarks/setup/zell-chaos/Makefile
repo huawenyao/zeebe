@@ -3,7 +3,7 @@ all: zeebe starter worker
 
 .PHONY: zeebe
 zeebe:
-	-helm install --name zell-chaos zeebe/zeebe-cluster -f zeebe-values.yaml
+	-helm install zell-chaos zeebe/zeebe-cluster -f zeebe-values.yaml
 	-kubectl apply -f curator-cronjob.yaml
 	-kubectl apply -f curator-configmap.yaml
 
@@ -21,7 +21,7 @@ clean: clean-starter clean-worker clean-zeebe
 
 .PHONY: clean-zeebe
 clean-zeebe:
-	-helm delete --purge zell-chaos
+	-helm uninstall zell-chaos
 	-kubectl delete -f curator-cronjob.yaml
 	-kubectl delete -f curator-configmap.yaml
 	-kubectl delete pvc -l app=zell-chaos-zeebe

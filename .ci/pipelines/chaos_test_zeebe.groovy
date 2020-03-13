@@ -50,14 +50,12 @@ pipeline {
                     // copy dummy kubeconfig so we can change default namespace later, without the config
                     // file `kubectl` cannot change the context since it's not defined
                     sh 'mkdir -p ~/.kube && cp zeebe/.ci/scripts/chaos-tests/kubeconfig ~/.kube/config'
-
                     dir('zeebe/benchmarks/setup') {
-                        sh "./newBenchmark ${CHAOS_TEST_NAMESPACE}"
-                        dir('zeebe/benchmark/setup/${CHAOS_TEST_NAMESPACE}') {
-                          sh "make clean zeebe worker"
-                        }
+                      sh "./newBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
+                      dir("${CHAOS_TEST_NAMESPACE}") {
+                        sh "make clean zeebe worker"
+                      }
                     }
-
                 }
             }
         }
@@ -81,9 +79,10 @@ pipeline {
     post {
         always {
             container('python') {
-
-                sh "zeebe/benchmark/setup/deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
+              dir("zeebe/benchmarks/setup/") {
+               sh "deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
             }
+          }
         }
 
         failure {
