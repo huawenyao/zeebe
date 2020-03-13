@@ -44,6 +44,12 @@ pvcAccessMode: ["ReadWriteOnce"]
 pvcSize: 128Gi
 pvcStorageClassName: ssd
 
+# SECURITY CONTEXT
+podSecurityContext: {
+  "capabilities": {
+    "add": ["SYS_ADMIN"]
+  }
+}
 
 # ELASTIC
 elasticsearch:
