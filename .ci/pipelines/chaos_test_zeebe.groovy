@@ -53,7 +53,10 @@ pipeline {
                     dir('zeebe/benchmarks/setup') {
                       sh "./newBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
                       dir("${CHAOS_TEST_NAMESPACE}") {
-                        sh "make clean zeebe worker"
+                        sh "cp -rv zeebe/.ci/scripts/chaos-tests/kustomize ."
+                        sh "helm template --release-name ${CHAOS_TEST_NAMESPACE} zeebe/zeebe-cluster -f zeebe-values.yaml --output-dir ."
+                        sh "cp -v ${CHAOS_TEST_NAMESPACE}/zeebe-cluster/templates/* kustomize/"
+                        sh "kubectl apply -k kustomize"
                       }
                     }
                 }
