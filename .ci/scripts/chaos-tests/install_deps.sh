@@ -6,6 +6,7 @@ apk --no-cache add bash make curl openssl
 
 pip install chaostoolkit
 chaos --version
+pip install chaostoolkit-kubernetes
 
 kubectl_version=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
 curl -LO https://storage.googleapis.com/kubernetes-release/release/${kubectl_version}/bin/linux/amd64/kubectl
