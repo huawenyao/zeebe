@@ -1,6 +1,9 @@
 .PHONY: all
 all: zeebe starter worker
 
+.PHONY: zeebe-chaos
+zeebe:
+	-helm template --release-name default zeebe/zeebe-cluster -f zeebe-values.yaml --output-dir .
 .PHONY: zeebe
 zeebe:
 	-helm install default zeebe/zeebe-cluster -f zeebe-values.yaml --skip-crds

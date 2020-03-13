@@ -74,7 +74,6 @@ pipeline {
 
                             }
                         }
-                        sh 'cat chaostoolkit.log'
                     }
                 }
             }
@@ -87,6 +86,7 @@ pipeline {
               dir("zeebe/benchmarks/setup/") {
                sh "./deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
             }
+            archive 'zeebe-chaos/chaos-experiments/kubernetes/chaostoolkit.log'
           }
         }
 
