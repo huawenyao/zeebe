@@ -70,6 +70,7 @@ pipeline {
 
                             }
                         }
+                        sh 'cat chaostoolkit.log'
                     }
                 }
             }
@@ -80,7 +81,7 @@ pipeline {
         always {
             container('python') {
               dir("zeebe/benchmarks/setup/") {
-               sh "deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
+               sh "./deleteBenchmark.sh ${CHAOS_TEST_NAMESPACE}"
             }
           }
         }
