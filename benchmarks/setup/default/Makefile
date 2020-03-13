@@ -3,7 +3,7 @@ all: zeebe starter worker
 
 .PHONY: zeebe
 zeebe:
-	-helm install default zeebe/zeebe-cluster -f zeebe-values.yaml
+	-helm install default zeebe/zeebe-cluster -f zeebe-values.yaml --skip-crds
 	-kubectl apply -f curator-cronjob.yaml
 	-kubectl apply -f curator-configmap.yaml
 
